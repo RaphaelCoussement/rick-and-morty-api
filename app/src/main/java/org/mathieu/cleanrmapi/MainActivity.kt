@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import org.mathieu.characters.details.CharacterDetailsScreen
+import org.mathieu.characters.detailsLocation.LocationDetailsScreen
 import org.mathieu.characters.list.CharactersScreen
 import org.mathieu.ui.composable
 
@@ -53,6 +54,11 @@ private fun MainContent() {
                 id = backStackEntry.arguments?.getInt("characterId") ?: -1
             )
 
+        }
+
+        composable(org.mathieu.ui.Destination.LocationDetails()) { backStackEntry ->
+            val locationId = backStackEntry.arguments?.getInt("locationId") ?: -1
+            LocationDetailsScreen(navController, locationId)
         }
 
     }

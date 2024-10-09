@@ -17,6 +17,7 @@ import kotlinx.serialization.Serializable
  * @property episode A list of episodes in which the character has appeared.
  * @property url The unique URL endpoint specifically for this character.
  * @property created The timestamp indicating when the character was added to the database.
+ * @property locationPreviews A list of previews for the locations visited by the character.
  */
 @Serializable
 internal data class CharacterResponse(
@@ -31,9 +32,30 @@ internal data class CharacterResponse(
     val image: String,
     val episode: List<String>,
     val url: String,
-    val created: String,
+    val created: String
 )
 
+/**
+ * Represents the origin or location information in a character response.
+ *
+ * @property name The name of the location (origin or current location).
+ * @property url The URL of the location (origin or current location).
+ */
 @Serializable
 internal data class CharacterLocationResponse(val name: String, val url: String)
 
+/**
+ * Represents a location preview in the API response.
+ *
+ * @property id The unique identifier of the location.
+ * @property name The name of the location.
+ * @property type The type or category of the location.
+ * @property dimension The dimension in which this location exists.
+ */
+@Serializable
+internal data class LocationPreviewResponse(
+    val id: Int,
+    val name: String,
+    val type: String,
+    val dimension: String
+)

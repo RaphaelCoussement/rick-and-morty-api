@@ -92,10 +92,7 @@ internal class CharacterRepositoryImpl(
                 obj.toModel()
             }
             ?: throw Exception("Character not found.")
-
-
 }
-
 
 fun <T> tryOrNull(block: () -> T) = try {
     block()

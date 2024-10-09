@@ -1,10 +1,12 @@
 package org.mathieu.data.local.objects
 
 import io.realm.kotlin.types.RealmObject
+import io.realm.kotlin.types.annotations.Ignore
 import io.realm.kotlin.types.annotations.PrimaryKey
 import org.mathieu.data.remote.responses.CharacterResponse
 import org.mathieu.data.repositories.tryOrNull
 import org.mathieu.domain.models.character.*
+import org.mathieu.domain.models.location.LocationPreview
 
 /**
  * Represents a character entity stored in the SQLite database. This object provides fields
@@ -23,8 +25,9 @@ import org.mathieu.domain.models.character.*
  * @property locationId The current location id.
  * @property image URL pointing to the character's avatar image.
  * @property created Timestamp indicating when the character entity was created in the database.
+ * @property locationPreviews List of previews for the locations visited by the character.
  */
-internal class CharacterObject: RealmObject {
+internal class CharacterObject : RealmObject {
     @PrimaryKey
     var id: Int = -1
     var name: String = ""
@@ -38,9 +41,29 @@ internal class CharacterObject: RealmObject {
     var locationId: Int = -1
     var image: String = ""
     var created: String = ""
+
+    @Ignore
+    var locationPreviews: MutableList<LocationPreviewObject> = mutableListOf()
 }
 
+/**
+ * Represents a location preview object stored in Realm.
+ *
+ * @property id The unique identifier of the location.
+ * @property name The name of the location.
+ * @property type The type or category of the location.
+ * @property dimension The dimension in which this location exists.
+ */
+internal class LocationPreviewObject : RealmObject {
+    var id: Int = -1
+    var name: String = ""
+    var type: String = ""
+    var dimension: String = ""
+}
 
+/**
+ * Converts a CharacterResponse into a CharacterObject for storage.
+ */
 internal fun CharacterResponse.toRealmObject() = CharacterObject().also { obj ->
     obj.id = id
     obj.name = name
@@ -56,6 +79,9 @@ internal fun CharacterResponse.toRealmObject() = CharacterObject().also { obj ->
     obj.created = created
 }
 
+/**
+ * Converts a CharacterObject to a domain model Character.
+ */
 internal fun CharacterObject.toModel() = Character(
     id = id,
     name = name,
@@ -65,5 +91,13 @@ internal fun CharacterObject.toModel() = Character(
     gender = tryOrNull { CharacterGender.valueOf(gender) } ?: CharacterGender.Unknown,
     origin = originName to originId,
     location = locationName to locationId,
-    avatarUrl = image
+    avatarUrl = image,
+    locationPreviews = locationPreviews.map { previewObj ->
+        LocationPreview(
+            id = previewObj.id,
+            name = previewObj.name,
+            type = previewObj.type,
+            dimension = previewObj.dimension
+        )
+    }
 )
